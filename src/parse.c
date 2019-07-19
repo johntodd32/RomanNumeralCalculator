@@ -24,10 +24,12 @@ static unsigned int parse_roman_digit(char digit)
 
 unsigned int parse_roman(const char *number)
 {
-    if (strlen(number) == 1)
-    {
-        return parse_roman_digit(number[0]);
+    int digits = strlen(number);
+    int sum = 0;
+
+    for (int i = 0; i < digits; ++i) {
+        sum += parse_roman_digit(number[i]);
     }
 
-    return 0;
+    return sum;
 }
