@@ -29,7 +29,7 @@ unsigned int parse_roman(const char *number)
     errno = 0;
     int digits = strlen(number);
     unsigned int sum = 0;
-    unsigned int digit_val, prev_digit_val;
+    unsigned int digit_val, prev_digit_val, second_prev_digit_val;
 
     digit_val = parse_roman_digit(number[0]);
     if (digit_val == 0 && errno != 0) {
@@ -37,15 +37,21 @@ unsigned int parse_roman(const char *number)
     }
     sum += digit_val;
     prev_digit_val = digit_val;
+    second_prev_digit_val = 9999;
     for (int i = 1; i < digits; ++i) {
         digit_val = parse_roman_digit(number[i]);
         if (digit_val == 0 && errno != 0) {
+            sum = 0;
+            break;
+        } else if (prev_digit_val < digit_val && second_prev_digit_val <= prev_digit_val) {
+            errno = EINVAL;
             sum = 0;
             break;
         } else if (prev_digit_val < digit_val) {
             sum -= 2 * prev_digit_val;
         }
         sum += digit_val;
+        second_prev_digit_val = prev_digit_val;
         prev_digit_val = digit_val;
     }
 

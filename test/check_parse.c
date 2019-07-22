@@ -35,7 +35,7 @@ START_TEST(test_fails_for_unrecognized_digits)
     unsigned int result;
 
     errno = 0;
-    unsigned int result = parse_roman("A");
+    result = parse_roman("A");
     ck_assert_int_eq(result, 0);
     ck_assert_str_eq(strerror(errno), strerror(EINVAL));
 
@@ -68,6 +68,24 @@ START_TEST(test_subtracts_leading_smaller_digit_from_trailing_larger_digit) {
 }
 END_TEST
 
+START_TEST(test_leading_smaller_digits_cant_repeat) {
+    int prev_errno = errno;
+    unsigned int result;
+
+    errno = 0;
+    result = parse_roman("IIV");
+    ck_assert_int_eq(result, 0);
+    ck_assert_int_eq(errno, EINVAL);
+
+    errno = 0;
+    result = parse_roman("CCM");
+    ck_assert_int_eq(result, 0);
+    ck_assert_int_eq(errno, EINVAL);
+
+    errno = prev_errno;
+}
+END_TEST
+
 Suite *parse_suite(void)
 {
     Suite *s;
@@ -80,6 +98,7 @@ Suite *parse_suite(void)
     tcase_add_test(tc_core, test_parse_multiple_digits);
     tcase_add_test(tc_core, test_fails_for_unrecognized_digits);
     tcase_add_test(tc_core, test_subtracts_leading_smaller_digit_from_trailing_larger_digit);
+    tcase_add_test(tc_core, test_leading_smaller_digits_cant_repeat);
     suite_add_tcase(s, tc_core);
 
     return s;
