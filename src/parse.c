@@ -26,11 +26,19 @@ static unsigned int parse_roman_digit(char digit)
 
 unsigned int parse_roman(const char *number)
 {
+    errno = 0;
     int digits = strlen(number);
-    int sum = 0;
+    unsigned int sum = 0;
+    unsigned int digit_val;
 
     for (int i = 0; i < digits; ++i) {
-        sum += parse_roman_digit(number[i]);
+        digit_val = parse_roman_digit(number[i]);
+        if (digit_val == 0 && errno != 0) {
+            sum = 0;
+            break;
+        } else {
+            sum += digit_val;
+        }
     }
 
     return sum;

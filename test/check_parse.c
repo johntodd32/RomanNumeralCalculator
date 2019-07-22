@@ -22,6 +22,13 @@ START_TEST(test_parse_one_digit)
 }
 END_TEST
 
+START_TEST(test_parse_multiple_digits)
+{
+    ck_assert_int_eq(parse_roman("II"), 2);
+    ck_assert_int_eq(parse_roman("MMXVII"), 2017);
+}
+END_TEST
+
 START_TEST(test_fails_for_unrecognized_digits)
 {
     int prev_errno = errno;
@@ -29,14 +36,13 @@ START_TEST(test_fails_for_unrecognized_digits)
     unsigned int result = parse_roman("A");
     ck_assert_int_eq(result, 0);
     ck_assert_str_eq(strerror(errno), strerror(EINVAL));
-    errno = prev_errno;
-}
-END_TEST
 
-START_TEST(test_parse_multiple_digits)
-{
-    ck_assert_int_eq(parse_roman("II"), 2);
-    ck_assert_int_eq(parse_roman("MMXVII"), 2017);
+    errno = 0;
+    result = parse_roman("AI");
+    ck_assert_int_eq(result, 0);
+    ck_assert_int_eq(errno, EINVAL);
+
+    errno = prev_errno;
 }
 END_TEST
 
@@ -49,8 +55,8 @@ Suite *parse_suite(void)
     tc_core = tcase_create("Core");
 
     tcase_add_test(tc_core, test_parse_one_digit);
-    tcase_add_test(tc_core, test_fails_for_unrecognized_digits);
     tcase_add_test(tc_core, test_parse_multiple_digits);
+    tcase_add_test(tc_core, test_fails_for_unrecognized_digits);
     suite_add_tcase(s, tc_core);
 
     return s;
