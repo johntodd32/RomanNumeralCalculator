@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <string.h>
 #include "roman/parse.h"
 
@@ -18,6 +19,7 @@ static unsigned int parse_roman_digit(char digit)
     } else if (digit == 'M' || digit == 'm') {
         return 1000;
     } else {
+        errno = EINVAL;
         return 0;
     }
 }
