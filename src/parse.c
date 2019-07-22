@@ -29,16 +29,24 @@ unsigned int parse_roman(const char *number)
     errno = 0;
     int digits = strlen(number);
     unsigned int sum = 0;
-    unsigned int digit_val;
+    unsigned int digit_val, prev_digit_val;
 
-    for (int i = 0; i < digits; ++i) {
+    digit_val = parse_roman_digit(number[0]);
+    if (digit_val == 0 && errno != 0) {
+        return 0;
+    }
+    sum += digit_val;
+    prev_digit_val = digit_val;
+    for (int i = 1; i < digits; ++i) {
         digit_val = parse_roman_digit(number[i]);
         if (digit_val == 0 && errno != 0) {
             sum = 0;
             break;
-        } else {
-            sum += digit_val;
+        } else if (prev_digit_val < digit_val) {
+            sum -= 2 * prev_digit_val;
         }
+        sum += digit_val;
+        prev_digit_val = digit_val;
     }
 
     return sum;
