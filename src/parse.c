@@ -19,34 +19,33 @@ static unsigned int parse_roman_digit(char digit)
     } else if (digit == 'M' || digit == 'm') {
         return 1000;
     } else {
-        errno = EINVAL;
         return 0;
     }
+}
+
+static unsigned int set_error()
+{
+    errno = EINVAL;
+    return 0;
 }
 
 unsigned int parse_roman(const char *number)
 {
     errno = 0;
     int digits = strlen(number);
-    unsigned int sum = 0;
-    unsigned int digit_val, prev_digit_val, second_prev_digit_val;
+    unsigned int sum, digit_val, prev_digit_val, second_prev_digit_val, repeats;
 
-    digit_val = parse_roman_digit(number[0]);
-    if (digit_val == 0 && errno != 0) {
-        return 0;
-    }
-    sum += digit_val;
-    prev_digit_val = digit_val;
+    sum = 0;
+    prev_digit_val = 9999;
     second_prev_digit_val = 9999;
-    int repeats = 1;
-    for (int i = 1; i < digits; ++i) {
+    repeats = 0;
+    for (int i = 0; i < digits; ++i) {
         digit_val = parse_roman_digit(number[i]);
-        if (digit_val == 0 && errno != 0) {
-            sum = 0;
+        if (digit_val == 0) {
+            sum = set_error();
             break;
         } else if (prev_digit_val < digit_val && second_prev_digit_val <= prev_digit_val) {
-            errno = EINVAL;
-            sum = 0;
+            sum = set_error();
             break;
         } else if (prev_digit_val < digit_val) {
             sum -= 2 * prev_digit_val;
@@ -57,12 +56,10 @@ unsigned int parse_roman(const char *number)
             repeats = 1;
         }
         if ((digit_val == 1 || digit_val == 10 || digit_val == 100) && repeats > 3) {
-            sum = 0;
-            errno = EINVAL;
+            sum = set_error();
             break;
         } else if ((digit_val == 5 || digit_val == 50 || digit_val == 500) && repeats > 1) {
-            sum = 0;
-            errno = EINVAL;
+            sum = set_error();
             break;
         }
         sum += digit_val;
