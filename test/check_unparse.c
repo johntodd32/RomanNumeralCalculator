@@ -1,6 +1,34 @@
+#include <errno.h>
 #include <stdlib.h>
 #include <check.h>
 #include "roman/unparse.h"
+
+START_TEST(test_fails_when_out_of_domain)
+{
+    char *result;
+    int prev_errno = errno;
+
+    errno = 0;
+    result = unparse_roman(4000);
+    ck_assert_ptr_null(result);
+    ck_assert_int_eq(errno, EDOM);
+    free(result);
+
+    errno = 0;
+    result = unparse_roman(-1);
+    ck_assert_ptr_null(result);
+    ck_assert_int_eq(errno, EDOM);
+    free(result);
+
+    errno = 0;
+    result = unparse_roman(0);
+    ck_assert_str_eq(result, "");
+    ck_assert_int_eq(errno, 0);
+    free(result);
+
+    errno = prev_errno;
+}
+END_TEST
 
 START_TEST(test_unparse_one_digit)
 {
@@ -44,6 +72,7 @@ Suite *unparse_suite(void)
     s = suite_create("Roman Unparse");
     tc_core = tcase_create("Core");
 
+    tcase_add_test(tc_core, test_fails_when_out_of_domain);
     tcase_add_test(tc_core, test_unparse_one_digit);
 
     suite_add_tcase(s, tc_core);
