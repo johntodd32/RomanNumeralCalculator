@@ -86,6 +86,24 @@ START_TEST(test_leading_smaller_digits_cant_repeat) {
 }
 END_TEST
 
+START_TEST(test_repeat_rules_are_followed) {
+    int prev_errno = errno;
+    unsigned int result;
+
+    errno = 0;
+    result = parse_roman("IIII");
+    ck_assert_int_eq(result, 0);
+    ck_assert_int_eq(errno, EINVAL);
+
+    errno = 0;
+    result = parse_roman("VV");
+    ck_assert_int_eq(result, 0);
+    ck_assert_int_eq(errno, EINVAL);
+
+    errno = prev_errno;
+}
+END_TEST
+
 Suite *parse_suite(void)
 {
     Suite *s;
@@ -99,6 +117,7 @@ Suite *parse_suite(void)
     tcase_add_test(tc_core, test_fails_for_unrecognized_digits);
     tcase_add_test(tc_core, test_subtracts_leading_smaller_digit_from_trailing_larger_digit);
     tcase_add_test(tc_core, test_leading_smaller_digits_cant_repeat);
+    tcase_add_test(tc_core, test_repeat_rules_are_followed);
     suite_add_tcase(s, tc_core);
 
     return s;

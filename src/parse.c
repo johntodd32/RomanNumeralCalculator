@@ -38,6 +38,7 @@ unsigned int parse_roman(const char *number)
     sum += digit_val;
     prev_digit_val = digit_val;
     second_prev_digit_val = 9999;
+    int repeats = 1;
     for (int i = 1; i < digits; ++i) {
         digit_val = parse_roman_digit(number[i]);
         if (digit_val == 0 && errno != 0) {
@@ -49,6 +50,20 @@ unsigned int parse_roman(const char *number)
             break;
         } else if (prev_digit_val < digit_val) {
             sum -= 2 * prev_digit_val;
+        }
+        if (prev_digit_val == digit_val) {
+            ++repeats;
+        } else {
+            repeats = 1;
+        }
+        if ((digit_val == 1 || digit_val == 10 || digit_val == 100) && repeats > 3) {
+            sum = 0;
+            errno = EINVAL;
+            break;
+        } else if ((digit_val == 5 || digit_val == 50 || digit_val == 500) && repeats > 1) {
+            sum = 0;
+            errno = EINVAL;
+            break;
         }
         sum += digit_val;
         second_prev_digit_val = prev_digit_val;
