@@ -64,6 +64,24 @@ START_TEST(test_unparse_one_digit)
 }
 END_TEST
 
+START_TEST(test_simple_concatenation)
+{
+    char *result;
+
+    result = unparse_roman(3);
+    ck_assert_str_eq(result, "III");
+    free(result);
+
+    result = unparse_roman(22);
+    ck_assert_str_eq(result, "XXII");
+    free(result);
+
+    result = unparse_roman(1776);
+    ck_assert_str_eq(result, "MDCCLXXVI");
+    free(result);
+}
+END_TEST
+
 Suite *unparse_suite(void)
 {
     Suite *s;
@@ -74,6 +92,7 @@ Suite *unparse_suite(void)
 
     tcase_add_test(tc_core, test_fails_when_out_of_domain);
     tcase_add_test(tc_core, test_unparse_one_digit);
+    tcase_add_test(tc_core, test_simple_concatenation);
 
     suite_add_tcase(s, tc_core);
     return s;
