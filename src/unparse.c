@@ -13,12 +13,13 @@ static unsigned int num_roman_characters = 7;
 static char *roman_characters[] = {"M", "D", "C", "L", "X", "V", "I"};
 static unsigned int roman_character_values[] = {1000, 500, 100, 50, 10, 5, 1};
 
-static void append_chars_while_current_greater_than_value(unsigned int *current, const int value, char **ptr, const char *text)
+static void append_chars_while_current_greater_than_value(unsigned int *current, char **ptr, const int index)
 {
-    size_t text_len = strlen(text);
+    const char *digit = roman_characters[index];
+    const unsigned int value = roman_character_values[index];
     while (*current >= value) {
-        strcpy(*ptr, text);
-        *ptr += text_len;
+        strcpy(*ptr, digit);
+        ++(*ptr);
         *current -= value;
     }
 }
@@ -38,7 +39,7 @@ char *unparse_roman(unsigned int arabic)
         char *ptr = buffer;
         unsigned int current = arabic;
         for (int i = 0; i < num_roman_characters; ++i) {
-            append_chars_while_current_greater_than_value(&current, roman_character_values[i], &ptr, roman_characters[i]);
+            append_chars_while_current_greater_than_value(&current, &ptr, i);
         }
         *ptr = '\0';
         result = malloc(strlen(buffer) + 1);
