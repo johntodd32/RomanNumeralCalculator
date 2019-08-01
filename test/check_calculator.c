@@ -82,6 +82,12 @@ START_TEST(test_performs_calculations)
     result = (char *) input("-");
     ck_assert_str_eq("V", result);
     free(result);
+
+    result = (char *) input("MMXIX"); free(result);
+    result = (char *) input("MDCCLXXVI"); free(result);
+    result = (char *) input("-");
+    ck_assert_str_eq("CCXLIII", result);
+    free(result);
 }
 END_TEST
 
@@ -141,6 +147,27 @@ START_TEST(test_fails_if_stack_gets_full)
 }
 END_TEST
 
+START_TEST(test_can_clear_calculation)
+{
+    unsigned int prev_errno = errno;
+    char *result;
+
+    errno = 0;
+    result = (char *) input("MDCCLXXV"); free(result);
+    result = (char *) clear();
+    ck_assert_str_eq("CLR", result);
+    free(result);
+    for (int i = 0; i < 10; ++i) {
+        result = (char *) input("I");
+        ck_assert_str_eq("I", result);
+        ck_assert_int_eq(0, errno);
+        free(result);
+    }
+
+    errno = prev_errno;
+}
+END_TEST
+
 Suite *parse_suite(void)
 {
     Suite *s;
@@ -155,6 +182,7 @@ Suite *parse_suite(void)
     tcase_add_test(tc_core, test_fails_if_unrecognized_operator_is_given);
     tcase_add_test(tc_core, test_fails_if_stack_is_invalid_when_operator_is_given);
     tcase_add_test(tc_core, test_fails_if_stack_gets_full);
+    tcase_add_test(tc_core, test_can_clear_calculation);
 
     suite_add_tcase(s, tc_core);
     return s;

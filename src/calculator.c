@@ -89,3 +89,11 @@ const char *input(const char *entry)
     }
     return result;
 }
+
+const char *clear(void)
+{
+    stack_pos = stack;
+    char *result = malloc(strlen("CLR") + 1);
+    strcpy(result, "CLR");
+    return result;
+}
