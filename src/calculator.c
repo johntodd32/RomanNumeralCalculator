@@ -53,6 +53,7 @@ const char *input(const char *entry)
 
     if ((op = is_operator(entry))) {
         if (stack_pos - stack < 2) {
+            errno = EOVERFLOW;
             result = malloc(strlen("ERR") + 1);
             strcpy(result, "ERR");
         } else {
@@ -66,6 +67,8 @@ const char *input(const char *entry)
                 strcpy(result, "ERR");
             } else {
                 result = unparse_roman(arabic_result);
+                *stack_pos = arabic_result;
+                ++stack_pos;
             }
         }
     } else {
@@ -74,6 +77,7 @@ const char *input(const char *entry)
             result = malloc(strlen("ERR") + 1);
             strcpy(result, "ERR");
         } else if (stack_pos - stack == MAX_STACK_HEIGHT) {
+            errno = EOVERFLOW;
             result = malloc(strlen("ERR") + 1);
             strcpy(result, "ERR");
         } else {

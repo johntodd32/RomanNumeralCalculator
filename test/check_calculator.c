@@ -23,6 +23,8 @@ START_TEST(test_displays_err_if_input_invalid)
     ck_assert_str_eq("ERR", result);
     ck_assert_uint_ne(0, errno);
     free(result);
+
+    errno = prev_errno;
 }
 END_TEST
 
@@ -41,6 +43,101 @@ START_TEST(test_performs_calculations)
     result = (char *) input("+");
     ck_assert_str_eq("XXII", result);
     free(result);
+
+    result = (char *) input("XX"); free(result);
+    result = (char *) input("XX"); free(result);
+    result = (char *) input("-");
+    ck_assert_str_eq("", result);
+    free(result);
+
+    result = (char *) input("XVI"); free(result);
+    result = (char *) input("III"); free(result);
+    result = (char *) input("*");
+    ck_assert_str_eq("XLVIII", result);
+    free(result);
+
+    result = (char *) input("XX"); free(result);
+    result = (char *) input("XX"); free(result);
+    result = (char *) input("/");
+    ck_assert_str_eq("I", result);
+    free(result);
+
+    // Example from https://en.wikipedia.org/wiki/Reverse_Polish_notation
+    // ((15 ÷ (7 − (1 + 1))) × 3) − (2 + (1 + 1))
+    // 15 7 1 1 + − ÷ 3 × 2 1 1 + + −
+    result = (char *) input("XV"); free(result);
+    result = (char *) input("VII"); free(result);
+    result = (char *) input("I"); free(result);
+    result = (char *) input("I"); free(result);
+    result = (char *) input("+"); free(result);
+    result = (char *) input("-"); free(result);
+    result = (char *) input("/"); free(result);
+    result = (char *) input("III"); free(result);
+    result = (char *) input("*"); free(result);
+    result = (char *) input("II"); free(result);
+    result = (char *) input("I"); free(result);
+    result = (char *) input("I"); free(result);
+    result = (char *) input("+"); free(result);
+    result = (char *) input("+"); free(result);
+    result = (char *) input("-");
+    ck_assert_str_eq("V", result);
+    free(result);
+}
+END_TEST
+
+START_TEST(test_fails_if_unrecognized_operator_is_given)
+{
+    unsigned int prev_errno = errno;
+    char *result;
+
+    errno = 0;
+    result = (char *) input("M"); free(result);
+    result = (char *) input("D"); free(result);
+    result = (char *) input("^");
+    ck_assert_str_eq("ERR", result);
+    ck_assert_int_ne(0, errno);
+    free(result);
+
+    errno = prev_errno;
+}
+END_TEST
+
+START_TEST(test_fails_if_stack_is_invalid_when_operator_is_given)
+{
+    unsigned int prev_errno = errno;
+    char *result;
+
+    errno = 0;
+    result = (char *) input("+");
+    ck_assert_str_eq("ERR", result);
+    ck_assert_int_ne(0, errno);
+    free(result);
+
+    errno = 0;
+    result = (char *) input("D"); free(result);
+    result = (char *) input("+");
+    ck_assert_str_eq("ERR", result);
+    ck_assert_int_ne(0, errno);
+    free(result);
+
+    errno = prev_errno;
+}
+END_TEST
+
+START_TEST(test_fails_if_stack_gets_full)
+{
+    unsigned int prev_errno = errno;
+    char *result;
+
+    for (int i = 0; i < 10; ++i) {
+        result = (char *) input("I"); free(result);
+    }
+    result = (char *) input("I");
+    ck_assert_str_eq("ERR", result);
+    ck_assert_int_ne(0, errno);
+    free(result);
+
+    errno = prev_errno;
 }
 END_TEST
 
@@ -55,6 +152,9 @@ Suite *parse_suite(void)
     tcase_add_test(tc_core, test_parses_numerals);
     tcase_add_test(tc_core, test_displays_err_if_input_invalid);
     tcase_add_test(tc_core, test_performs_calculations);
+    tcase_add_test(tc_core, test_fails_if_unrecognized_operator_is_given);
+    tcase_add_test(tc_core, test_fails_if_stack_is_invalid_when_operator_is_given);
+    tcase_add_test(tc_core, test_fails_if_stack_gets_full);
 
     suite_add_tcase(s, tc_core);
     return s;
