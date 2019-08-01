@@ -54,7 +54,12 @@ static unsigned int operate(const unsigned int operation, const unsigned int ope
             return operand1 * operand2;
             break;
         case DividedBy:
-            return operand2 / operand1;
+            if (operand1 == 0) {
+                errno = ERANGE;
+                return 0;
+            } else {
+                return operand2 / operand1;
+            }
             break;
         default:
             errno = EPERM;
@@ -78,7 +83,7 @@ const char *input(const char *entry)
             --stack_pos;
             unsigned int op2 = *stack_pos;
             unsigned int arabic_result = operate(op, op1, op2);
-            if (arabic_result == 0 && errno == EPERM) {
+            if (arabic_result == 0 && (errno == EPERM || errno == ERANGE)) {
                 result = copy_message("ERR");
             } else {
                 *stack_pos = arabic_result;

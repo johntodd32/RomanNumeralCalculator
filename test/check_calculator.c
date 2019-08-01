@@ -91,6 +91,24 @@ START_TEST(test_performs_calculations)
 }
 END_TEST
 
+START_TEST(test_gives_error_for_divide_by_zero)
+{
+    unsigned int prev_errno = errno;
+    char *result;
+
+    result = (char *) input("V"); free(result);
+    result = (char *) input("I"); free(result);
+    result = (char *) input("I"); free(result);
+    result = (char *) input("-"); free(result);
+    result = (char *) input("/");
+    ck_assert_str_eq("ERR", result);
+    ck_assert_int_eq(ERANGE, errno);
+    free(result);
+
+    errno = prev_errno;
+}
+END_TEST
+
 START_TEST(test_fails_if_unrecognized_operator_is_given)
 {
     unsigned int prev_errno = errno;
@@ -179,6 +197,7 @@ Suite *parse_suite(void)
     tcase_add_test(tc_core, test_parses_numerals);
     tcase_add_test(tc_core, test_displays_err_if_input_invalid);
     tcase_add_test(tc_core, test_performs_calculations);
+    tcase_add_test(tc_core, test_gives_error_for_divide_by_zero);
     tcase_add_test(tc_core, test_fails_if_unrecognized_operator_is_given);
     tcase_add_test(tc_core, test_fails_if_stack_is_invalid_when_operator_is_given);
     tcase_add_test(tc_core, test_fails_if_stack_gets_full);
