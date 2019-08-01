@@ -90,6 +90,10 @@ START_TEST(test_uses_leading_digit_subtraction)
     ck_assert_str_eq(result, "IV");
     free(result);
 
+    result = unparse_roman(8);
+    ck_assert_str_eq(result, "VIII");
+    free(result);
+
     result = unparse_roman(1989);
     ck_assert_str_eq(result, "MCMLXXXIX");
     free(result);
