@@ -22,6 +22,27 @@ static void append_chars_while_current_greater_than_value(unsigned int *current,
         ++(*ptr);
         *current -= value;
     }
+    if (index == 0 && *current >= 900) {
+        strcpy(*ptr, "CM");
+        *ptr += 2;
+        *current -= 900;
+    } else if (index == 2 && *current >= 90) {
+        strcpy(*ptr, "XC");
+        *ptr += 2;
+        *current -= 90;
+    } else if (index == 3 && *current >= 40) {
+        strcpy(*ptr, "XL");
+        *ptr += 2;
+        *current -= 40;
+    } else if (index == 4 && *current >= 9) {
+        strcpy(*ptr, "IX");
+        *ptr += 2;
+        *current -= 9;
+    } else if (index == 5 && *current >= 4) {
+        strcpy(*ptr, "IV");
+        *ptr += 2;
+        *current -= 4;
+    }
 }
 
 char *unparse_roman(unsigned int arabic)

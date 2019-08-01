@@ -82,6 +82,24 @@ START_TEST(test_simple_concatenation)
 }
 END_TEST
 
+START_TEST(test_uses_leading_digit_subtraction)
+{
+    char *result;
+
+    result = unparse_roman(4);
+    ck_assert_str_eq(result, "IV");
+    free(result);
+
+    result = unparse_roman(1989);
+    ck_assert_str_eq(result, "MCMLXXXIX");
+    free(result);
+
+    result = unparse_roman(3999);
+    ck_assert_str_eq(result, "MMMCMXCIX");
+    free(result);
+}
+END_TEST
+
 Suite *unparse_suite(void)
 {
     Suite *s;
@@ -93,6 +111,7 @@ Suite *unparse_suite(void)
     tcase_add_test(tc_core, test_fails_when_out_of_domain);
     tcase_add_test(tc_core, test_unparse_one_digit);
     tcase_add_test(tc_core, test_simple_concatenation);
+    tcase_add_test(tc_core, test_uses_leading_digit_subtraction);
 
     suite_add_tcase(s, tc_core);
     return s;
