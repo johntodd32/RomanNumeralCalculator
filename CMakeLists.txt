@@ -5,7 +5,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 enable_testing()
 
-add_library(romcalc src/parse.c src/unparse.c)
+add_library(romcalc src/parse.c src/unparse.c src/calculator.c)
 target_include_directories(romcalc
     PUBLIC
         $<INSTALL_INTERFACE:include>
