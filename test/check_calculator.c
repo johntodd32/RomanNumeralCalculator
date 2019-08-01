@@ -3,6 +3,16 @@
 #include <check.h>
 #include "roman/calculator.h"
 
+START_TEST(test_parses_numerals)
+{
+    char *result;
+
+    result = (char *) input("XX");
+    ck_assert_str_eq("XX", result);
+    free(result);
+}
+END_TEST
+
 START_TEST(test_performs_calculations)
 {
     char *result;
@@ -29,6 +39,7 @@ Suite *parse_suite(void)
     s = suite_create("Roman Calculator");
     tc_core = tcase_create("Core");
 
+    tcase_add_test(tc_core, test_parses_numerals);
     tcase_add_test(tc_core, test_performs_calculations);
 
     suite_add_tcase(s, tc_core);
