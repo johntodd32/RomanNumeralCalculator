@@ -13,6 +13,19 @@ START_TEST(test_parses_numerals)
 }
 END_TEST
 
+START_TEST(test_displays_err_if_input_invalid)
+{
+    unsigned int prev_errno = errno;
+    char *result;
+
+    errno = 0;
+    result = (char *) input("Z");
+    ck_assert_str_eq("ERR", result);
+    ck_assert_uint_ne(0, errno);
+    free(result);
+}
+END_TEST
+
 START_TEST(test_performs_calculations)
 {
     char *result;
@@ -40,6 +53,7 @@ Suite *parse_suite(void)
     tc_core = tcase_create("Core");
 
     tcase_add_test(tc_core, test_parses_numerals);
+    tcase_add_test(tc_core, test_displays_err_if_input_invalid);
     tcase_add_test(tc_core, test_performs_calculations);
 
     suite_add_tcase(s, tc_core);
