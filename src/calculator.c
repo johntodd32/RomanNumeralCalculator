@@ -7,6 +7,9 @@
 
 #define MAX_STACK_HEIGHT 10
 
+const char *clear_message = "CLR";
+const char *error_message = "ERR";
+
 const unsigned int num_ops = 5;
 enum Op{None, Plus, Minus, Times, DividedBy};
 typedef struct Operation {
@@ -76,7 +79,7 @@ const char *input(const char *entry)
     if ((op = is_operator(entry))) {
         if (stack_pos - stack < 2) {
             errno = EOVERFLOW;
-            result = copy_message("ERR");
+            result = copy_message(error_message);
         } else {
             --stack_pos;
             unsigned int op1 = *stack_pos;
@@ -84,7 +87,7 @@ const char *input(const char *entry)
             unsigned int op2 = *stack_pos;
             unsigned int arabic_result = operate(op, op1, op2);
             if (arabic_result == 0 && (errno == EPERM || errno == ERANGE)) {
-                result = copy_message("ERR");
+                result = copy_message(error_message);
             } else {
                 *stack_pos = arabic_result;
                 ++stack_pos;
@@ -94,10 +97,10 @@ const char *input(const char *entry)
     } else {
         unsigned int parse_result = parse_roman(entry);
         if (parse_result == 0 && errno != 0) {
-            result = copy_message("ERR");
+            result = copy_message(error_message);
         } else if (stack_pos - stack == MAX_STACK_HEIGHT) {
             errno = EOVERFLOW;
-            result = copy_message("ERR");
+            result = copy_message(error_message);
         } else {
             *stack_pos = parse_result;
             ++stack_pos;
@@ -110,5 +113,5 @@ const char *input(const char *entry)
 const char *clear(void)
 {
     stack_pos = stack;
-    return copy_message("CLR");
+    return copy_message(clear_message);
 }

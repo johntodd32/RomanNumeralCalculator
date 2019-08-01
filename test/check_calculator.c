@@ -20,7 +20,7 @@ START_TEST(test_displays_err_if_input_invalid)
 
     errno = 0;
     result = (char *) input("Z");
-    ck_assert_str_eq("ERR", result);
+    ck_assert_str_eq(error_message, result);
     ck_assert_uint_ne(0, errno);
     free(result);
 
@@ -101,7 +101,7 @@ START_TEST(test_gives_error_for_divide_by_zero)
     result = (char *) input("I"); free(result);
     result = (char *) input("-"); free(result);
     result = (char *) input("/");
-    ck_assert_str_eq("ERR", result);
+    ck_assert_str_eq(error_message, result);
     ck_assert_int_eq(ERANGE, errno);
     free(result);
 
@@ -118,7 +118,7 @@ START_TEST(test_fails_if_unrecognized_operator_is_given)
     result = (char *) input("M"); free(result);
     result = (char *) input("D"); free(result);
     result = (char *) input("^");
-    ck_assert_str_eq("ERR", result);
+    ck_assert_str_eq(error_message, result);
     ck_assert_int_ne(0, errno);
     free(result);
 
@@ -133,14 +133,14 @@ START_TEST(test_fails_if_stack_is_invalid_when_operator_is_given)
 
     errno = 0;
     result = (char *) input("+");
-    ck_assert_str_eq("ERR", result);
+    ck_assert_str_eq(error_message, result);
     ck_assert_int_ne(0, errno);
     free(result);
 
     errno = 0;
     result = (char *) input("D"); free(result);
     result = (char *) input("+");
-    ck_assert_str_eq("ERR", result);
+    ck_assert_str_eq(error_message, result);
     ck_assert_int_ne(0, errno);
     free(result);
 
@@ -157,7 +157,7 @@ START_TEST(test_fails_if_stack_gets_full)
         result = (char *) input("I"); free(result);
     }
     result = (char *) input("I");
-    ck_assert_str_eq("ERR", result);
+    ck_assert_str_eq(error_message, result);
     ck_assert_int_ne(0, errno);
     free(result);
 
@@ -173,7 +173,7 @@ START_TEST(test_can_clear_calculation)
     errno = 0;
     result = (char *) input("MDCCLXXV"); free(result);
     result = (char *) clear();
-    ck_assert_str_eq("CLR", result);
+    ck_assert_str_eq(clear_message, result);
     free(result);
     for (int i = 0; i < 10; ++i) {
         result = (char *) input("I");
