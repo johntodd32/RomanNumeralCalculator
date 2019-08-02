@@ -4,7 +4,7 @@
 extern const char *clear_message;
 extern const char *error_message;
 
-const char *input(const char *);
-const char *clear(void);
+char *input(const char *);
+char *clear(void);
 
 #endif

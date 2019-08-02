@@ -70,7 +70,7 @@ static unsigned int operate(const unsigned int operation, const unsigned int ope
     }
 }
 
-const char *input(const char *entry)
+char *input(const char *entry)
 {
     errno = 0;
     enum Op op;
@@ -110,7 +110,7 @@ const char *input(const char *entry)
     return result;
 }
 
-const char *clear(void)
+char *clear(void)
 {
     stack_pos = stack;
     return copy_message(clear_message);

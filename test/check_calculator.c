@@ -7,7 +7,7 @@ START_TEST(test_parses_numerals)
 {
     char *result;
 
-    result = (char *) input("XX");
+    result = input("XX");
     ck_assert_str_eq("XX", result);
     free(result);
 }
@@ -19,7 +19,7 @@ START_TEST(test_displays_err_if_input_invalid)
     char *result;
 
     errno = 0;
-    result = (char *) input("Z");
+    result = input("Z");
     ck_assert_str_eq(error_message, result);
     ck_assert_uint_ne(0, errno);
     free(result);
@@ -32,60 +32,60 @@ START_TEST(test_performs_calculations)
 {
     char *result;
 
-    result = (char *) input("XX");
+    result = input("XX");
     ck_assert_str_eq("XX", result);
     free(result);
 
-    result = (char *) input("II");
+    result = input("II");
     ck_assert_str_eq("II", result);
     free(result);
 
-    result = (char *) input("+");
+    result = input("+");
     ck_assert_str_eq("XXII", result);
     free(result);
 
-    result = (char *) input("XX"); free(result);
-    result = (char *) input("XX"); free(result);
-    result = (char *) input("-");
+    result = input("XX"); free(result);
+    result = input("XX"); free(result);
+    result = input("-");
     ck_assert_str_eq("", result);
     free(result);
 
-    result = (char *) input("XVI"); free(result);
-    result = (char *) input("III"); free(result);
-    result = (char *) input("*");
+    result = input("XVI"); free(result);
+    result = input("III"); free(result);
+    result = input("*");
     ck_assert_str_eq("XLVIII", result);
     free(result);
 
-    result = (char *) input("XX"); free(result);
-    result = (char *) input("XX"); free(result);
-    result = (char *) input("/");
+    result = input("XX"); free(result);
+    result = input("XX"); free(result);
+    result = input("/");
     ck_assert_str_eq("I", result);
     free(result);
 
     // Example from https://en.wikipedia.org/wiki/Reverse_Polish_notation
     // ((15 ÷ (7 − (1 + 1))) × 3) − (2 + (1 + 1))
     // 15 7 1 1 + − ÷ 3 × 2 1 1 + + −
-    result = (char *) input("XV"); free(result);
-    result = (char *) input("VII"); free(result);
-    result = (char *) input("I"); free(result);
-    result = (char *) input("I"); free(result);
-    result = (char *) input("+"); free(result);
-    result = (char *) input("-"); free(result);
-    result = (char *) input("/"); free(result);
-    result = (char *) input("III"); free(result);
-    result = (char *) input("*"); free(result);
-    result = (char *) input("II"); free(result);
-    result = (char *) input("I"); free(result);
-    result = (char *) input("I"); free(result);
-    result = (char *) input("+"); free(result);
-    result = (char *) input("+"); free(result);
-    result = (char *) input("-");
+    result = input("XV"); free(result);
+    result = input("VII"); free(result);
+    result = input("I"); free(result);
+    result = input("I"); free(result);
+    result = input("+"); free(result);
+    result = input("-"); free(result);
+    result = input("/"); free(result);
+    result = input("III"); free(result);
+    result = input("*"); free(result);
+    result = input("II"); free(result);
+    result = input("I"); free(result);
+    result = input("I"); free(result);
+    result = input("+"); free(result);
+    result = input("+"); free(result);
+    result = input("-");
     ck_assert_str_eq("V", result);
     free(result);
 
-    result = (char *) input("MMXIX"); free(result);
-    result = (char *) input("MDCCLXXVI"); free(result);
-    result = (char *) input("-");
+    result = input("MMXIX"); free(result);
+    result = input("MDCCLXXVI"); free(result);
+    result = input("-");
     ck_assert_str_eq("CCXLIII", result);
     free(result);
 }
@@ -96,11 +96,11 @@ START_TEST(test_gives_error_for_divide_by_zero)
     unsigned int prev_errno = errno;
     char *result;
 
-    result = (char *) input("V"); free(result);
-    result = (char *) input("I"); free(result);
-    result = (char *) input("I"); free(result);
-    result = (char *) input("-"); free(result);
-    result = (char *) input("/");
+    result = input("V"); free(result);
+    result = input("I"); free(result);
+    result = input("I"); free(result);
+    result = input("-"); free(result);
+    result = input("/");
     ck_assert_str_eq(error_message, result);
     ck_assert_int_eq(ERANGE, errno);
     free(result);
@@ -115,9 +115,9 @@ START_TEST(test_fails_if_unrecognized_operator_is_given)
     char *result;
 
     errno = 0;
-    result = (char *) input("M"); free(result);
-    result = (char *) input("D"); free(result);
-    result = (char *) input("^");
+    result = input("M"); free(result);
+    result = input("D"); free(result);
+    result = input("^");
     ck_assert_str_eq(error_message, result);
     ck_assert_int_ne(0, errno);
     free(result);
@@ -132,14 +132,14 @@ START_TEST(test_fails_if_stack_is_invalid_when_operator_is_given)
     char *result;
 
     errno = 0;
-    result = (char *) input("+");
+    result = input("+");
     ck_assert_str_eq(error_message, result);
     ck_assert_int_ne(0, errno);
     free(result);
 
     errno = 0;
-    result = (char *) input("D"); free(result);
-    result = (char *) input("+");
+    result = input("D"); free(result);
+    result = input("+");
     ck_assert_str_eq(error_message, result);
     ck_assert_int_ne(0, errno);
     free(result);
@@ -154,9 +154,9 @@ START_TEST(test_fails_if_stack_gets_full)
     char *result;
 
     for (int i = 0; i < 10; ++i) {
-        result = (char *) input("I"); free(result);
+        result = input("I"); free(result);
     }
-    result = (char *) input("I");
+    result = input("I");
     ck_assert_str_eq(error_message, result);
     ck_assert_int_ne(0, errno);
     free(result);
@@ -171,12 +171,12 @@ START_TEST(test_can_clear_calculation)
     char *result;
 
     errno = 0;
-    result = (char *) input("MDCCLXXV"); free(result);
-    result = (char *) clear();
+    result = input("MDCCLXXV"); free(result);
+    result = clear();
     ck_assert_str_eq(clear_message, result);
     free(result);
     for (int i = 0; i < 10; ++i) {
-        result = (char *) input("I");
+        result = input("I");
         ck_assert_str_eq("I", result);
         ck_assert_int_eq(0, errno);
         free(result);
