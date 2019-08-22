@@ -19,7 +19,7 @@ result = input("V"); free(result);
 result = clear(); free(result);
 result = input("X"); free(result);
 result = input("I"); free(result);
-result = input("*"); free(result);
+result = input("+"); free(result);
 ck_assert_str_eq(result, "XI");
 ```
 
